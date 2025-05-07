@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useCartContext } from '../context/CartContext';
 import { FaHeart } from "react-icons/fa";
 import { addToCartAPI } from '../api calls/api.js'
-import axios from 'axios';
 
 function Product({ product }) {
     const { product_name, product_img, description, price, ratings, isfavourite:isFavourite } = product;
-    const {  dispatch } = useCartContext();
+    const {  state, dispatch } = useCartContext();
     
     const [favourite, setFavourite] = useState(isFavourite);
     const [isAdded, setIsAdded] = useState(false);
@@ -21,20 +20,9 @@ function Product({ product }) {
     }
 
     useEffect(()=>{
-        // Assuming cartItems is fetched from the database and contains product IDs
-        const fetchCartItems = async () => {
-            try {
-            const response = await axios.get('http://localhost:4000/api/cart/123'); // Replace with your API endpoint
-            const cartItems = await response.data;
-            const isProductInCart = cartItems.some(item => item.product_id === product.product_id);
+            const isProductInCart = state.cartItems.some(item => item.product_id === product.product_id);
             setIsAdded(isProductInCart);
-            console.log("Cart Items", isAdded);
-            } catch (error) {
-            console.error('Error fetching cart items:', error);
-            }
-        };
-        fetchCartItems();
-    },[]);
+    },[state.cartItems, product.product_id]);
 
     function addToWishList(product) {
         // Toggle favourite status
@@ -42,7 +30,6 @@ function Product({ product }) {
         setFavourite(updatedFavourite);
         // Dispatch the action to add/remove from the wishlist
         dispatch({ type: 'ADD_TO_WISHLIST', payload: { ...product, isFavourite: updatedFavourite }});
-        // console.log(state.wishList)
     }
 
     return (

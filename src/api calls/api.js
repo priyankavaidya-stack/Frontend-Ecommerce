@@ -11,7 +11,11 @@ export const addToCartAPI = async (productId, sessionId, dispatch) => {
         if(dispatch){
             dispatch({type: 'ADD_TO_CART', payload: response.data});
         }
-        return response.data;
+        // Then sync with full server state
+        const updatedCart = await fetchCartItems(sessionId);
+        
+        dispatch({type: 'FETCH_CART_ITEMS', payload: updatedCart});
+        return updatedCart;
     } catch (error) {
         console.error('Error adding to cart:', error);
         throw new Error('Failed to add to cart');

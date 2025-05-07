@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useCartContext } from '../context/CartContext';
+import axios from 'axios';
 
 function CartItem({ product }) {
     const { product_name, product_img, description, price, quantity } = product;
         const { dispatch } = useCartContext();
-
-        console.log(product);
-
         function removeFromCart(product){
             dispatch({type: 'REMOVE_FROM_CART', payload: product});
         }

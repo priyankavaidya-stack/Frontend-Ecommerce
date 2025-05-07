@@ -20,7 +20,7 @@ export const CartProvider = ({children}) => {
                 const response = await axios.get('http://localhost:4000/api/products');
                 // console.log("response data", response.data);
                 if (Array.isArray(response.data)) {
-                    console.log("Response from API", response.data);
+                    // console.log("Response from API", response.data);
                     dispatch({ type: 'FETCH_PRODUCTS', payload: response.data });
                 } else {
                     console.error('Response data is not an array');

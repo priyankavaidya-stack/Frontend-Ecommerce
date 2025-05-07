@@ -17,7 +17,7 @@ export const cartReducer = (state, action) => {
             return {
                 ...state,
                 cartItems: action.payload,
-                totalPrice: action.payload.reduce((total, item) => total + item.price * item.qty, 0)
+                totalPrice: action.payload.reduce((total, item) => total + item.price * item.quantity,0)
             }
         case 'ADD_TO_CART':
             const updatedCartItems = [
@@ -25,28 +25,14 @@ export const cartReducer = (state, action) => {
                 { ...action.payload }
             ]
 
-            const updatedProducts = state.products.map((item)=> {
-                if(item.id === action.payload.id){
-                    // Make sure to return the updated product object
-                    return {...item, isAdded: true}
-                }
-                // Ensure other items are unchanged
-                return item;
-            })
-            const updatedPrice = updatedCartItems.reduce((total, item)=> total + item.price* item.qty, 0);
+            const updatedPrice = updatedCartItems.reduce((total, item)=> total + item.price* item.quantity,0)
             
-            const updatedWishListItem = state.wishList.map((item)=>{
-                if(item.id === action.payload.id){
-                    return { ...item, isAdded: true}
-                }else return item;
-            })
             return{
                 ...state,
-                products: updatedProducts,
                 cartItems: updatedCartItems,
                 totalPrice: updatedPrice,
-                wishList: updatedWishListItem
             };
+            
         case 'REMOVE_FROM_CART':
             const filteredCartItems = state.cartItems.filter((item)=> item.id !== action.payload.id);
             const updatedFilteredPrice = filteredCartItems.reduce((total, item)=> total + item.price, 0);
