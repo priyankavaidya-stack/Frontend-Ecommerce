@@ -1,21 +1,27 @@
-import React, { useEffect } from 'react';
 import { useCartContext } from '../context/CartContext';
-import axios from 'axios';
+import { removeFromCartAPI, incrementQty, decrementQty } from '../api calls/api';
 
 function CartItem({ product }) {
-    const { product_name, product_img, description, price, quantity } = product;
+    const { product_id, product_name, product_img, description, price, quantity } = product;
         const { dispatch } = useCartContext();
-        function removeFromCart(product){
-            dispatch({type: 'REMOVE_FROM_CART', payload: product});
-        }
-
-        function decrementQty(product){
+        
+        const decreaseQty = async (productId, sessionId) => {
             if(product.qty > 1)
-            dispatch({ type: 'DECREMENT_QTY', payload: product})
+                console.log("hello")
+                decrementQty(productId, sessionId, dispatch);
         }
 
-        function incrementQty(product){
-            dispatch({ type: 'INCREMENT_QTY', payload: product});
+        const increaseQty = async (productId, sessionId) => {
+            incrementQty(productId, sessionId, dispatch);
+        }
+
+        const removeFromCart = async(productId, sessionId) => {
+                try{
+                    removeFromCartAPI(productId, sessionId, dispatch);
+                }
+                catch(error){
+                    console.error('Error removing from cart:', error);
+                }
         }
 
     return (
@@ -24,15 +30,15 @@ function CartItem({ product }) {
             <div className='px-2 py-1'>
                 <h3 className='font-semibold'>{product_name}</h3>
                 <p className='text-sm text-gray-500 mt-2 truncate text-wrap'>{description}</p>
-                <p className='mt-3 text-lg font-bold'>₹ {price}</p>
+                <p className='mt-3 text-lg font-bold'>₹ {Number(price).toLocaleString('en-IN')}</p>
                 <div className='flex items-center text-center my-2'>
                     <div className='flex justify-around items-center text-gray-700'>
-                        <button className={`border w-5 h-5 rounded-full flex justify-center items-center text-center pb-1 mx-1 ${quantity === 1 ? "text-gray-300" : "cursor-pointer"}`} onClick={()=>decrementQty(product)}>-</button>
+                        <button className={`border w-5 h-5 rounded-full flex justify-center items-center text-center pb-1 mx-1 ${quantity === 1 ? "text-gray-300" : "cursor-pointer"}`} onClick={()=>decreaseQty(product_id, 123)}>-</button>
                         <span className='px-5 border'>{quantity}</span>
-                        <button className='border w-5 h-5 rounded-full cursor-pointer flex justify-center items-center text-center pb-1 mx-1' onClick={()=>incrementQty(product)}>+</button>
+                        <button className='border w-5 h-5 rounded-full cursor-pointer flex justify-center items-center text-center pb-1 mx-1' onClick={()=>increaseQty(product_id, 123)}>+</button>
                     </div>
                 </div>
-                <button className='bg-orange-400 text-white font-semibold text-sm  px-2 py-1 my-2 cursor-pointer' onClick={() => removeFromCart(product)}>Remove From Cart</button>
+                <button className='bg-orange-400 text-white font-semibold text-sm  px-2 py-1 my-2 cursor-pointer' onClick={() => removeFromCart(product_id, 123)}>Remove From Cart</button>
             </div>
         </div>
     );

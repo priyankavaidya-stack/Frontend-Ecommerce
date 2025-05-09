@@ -37,25 +37,25 @@ export const cartReducer = (state, action) => {
             const filteredCartItems = state.cartItems.filter((item)=> item.id !== action.payload.id);
             const updatedFilteredPrice = filteredCartItems.reduce((total, item)=> total + item.price, 0);
             
-            const updatedFilteredProducts = state.products.map((item)=> {
-                if(item.id === action.payload.id){
-                    return {...item, isAdded: false}
-                }
-                // Ensure all products are returned correctly
-                return item;
-            })
+            // const updatedFilteredProducts = state.products.map((item)=> {
+            //     if(item.id === action.payload.id){
+            //         return {...item, isAdded: false}
+            //     }
+            //     // Ensure all products are returned correctly
+            //     return item;
+            // })
         
-            const updatedRemovedItemList = state.wishList.map((item)=> {
-                if(item.id === action.payload.id)return { ...item, isAdded: false}
-                else return item;
-            })
+            // const updatedRemovedItemList = state.wishList.map((item)=> {
+            //     if(item.id === action.payload.id)return { ...item, isAdded: false}
+            //     else return item;
+            // })
             
             return{
                 ...state,
-                products: updatedFilteredProducts,
+                // products: updatedFilteredProducts,
                 cartItems: filteredCartItems,
                 totalPrice: updatedFilteredPrice,
-                wishList: updatedRemovedItemList
+                // wishList: updatedRemovedItemList
             }
         case 'CLEAR_CART':
             return{
@@ -110,7 +110,7 @@ export const cartReducer = (state, action) => {
             const updatedIncrementedQty = state.cartItems.map(item => {
                 if(item.id === action.payload.id){
                     return { ...item, qty: item.qty + 1}
-                }else return item
+                }else return item;
             })
 
             const updatedIncQtyPrice = updatedIncrementedQty.reduce((total, item)=> total + item.price* item.qty, 0);

@@ -7,7 +7,6 @@ export const addToCartAPI = async (productId, sessionId, dispatch) => {
             product_id: productId,
             session_id: sessionId
         })
-        console.log("Response from Cart API", response.data);
         if(dispatch){
             dispatch({type: 'ADD_TO_CART', payload: response.data});
         }
@@ -22,6 +21,25 @@ export const addToCartAPI = async (productId, sessionId, dispatch) => {
     }
 }
 
+export const removeFromCartAPI = async (productId, sessionId, dispatch) => {
+    try {
+        const response = await axios.post(`http://localhost:4000/api/cart/remove/${productId}`);
+
+        if(dispatch){
+            dispatch({type: 'REMOVE_FROM_CART', payload: response.data});
+        }
+      
+        // // Then sync with full server state
+        const updatedCart = await fetchCartItems(sessionId);
+        
+        dispatch({type: 'FETCH_CART_ITEMS', payload: updatedCart});
+        return updatedCart;
+    } catch (error) {
+        console.error('Error removing from cart:', error);
+        throw new Error('Failed to remove from cart');
+    }
+}
+
 export const fetchCartItems = async (sessionId) => {
     try {
         const response = await axios.get(`http://localhost:4000/api/cart/${sessionId}`);
@@ -29,5 +47,42 @@ export const fetchCartItems = async (sessionId) => {
     } catch (error) {
         console.error('Error fetching cart items:', error);
         throw new Error('Failed to fetch cart items');
+    }
+}
+
+export const incrementQty = async (productId, sessionId, dispatch) => {
+    try {
+        const response = await axios.post(`http://localhost:4000/api/cart/incrementQty/${productId}`);
+        
+        if(dispatch){
+            dispatch({type: 'INCREMENT_QTY', payload: response.data});
+        }
+        // // Then sync with full server state
+        const updatedCart = await fetchCartItems(sessionId);
+        dispatch({type: 'FETCH_CART_ITEMS', payload: updatedCart});
+        return updatedCart;
+
+    } catch (error) {
+        console.log("Error incresing qty in API integration:", error);
+        throw new Error('Failed to increase the qty of item in cart');
+    }
+}
+
+export const decrementQty = async (productId, sessionId, dispatch) => {
+    try {
+        const response = await axios.post(`http://localhost:4000/api/cart/decrementQty/${productId}`);
+        console.log("Response", response)
+        if(dispatch){
+            dispatch({type: 'DECREMENT_QTY', payload: response.data});
+        }
+      
+        // // Then sync with full server state
+        const updatedCart = await fetchCartItems(sessionId);
+        dispatch({type: 'FETCH_CART_ITEMS', payload: updatedCart});
+        return updatedCart;
+
+    } catch (error) {
+        console.log("Error decresing qty in API integration:", error);
+        throw new Error('Failed to decrease the qty of item in cart');
     }
 }

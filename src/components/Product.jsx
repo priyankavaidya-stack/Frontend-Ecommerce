@@ -22,7 +22,7 @@ function Product({ product }) {
     useEffect(()=>{
             const isProductInCart = state.cartItems.some(item => item.product_id === product.product_id);
             setIsAdded(isProductInCart);
-    },[state.cartItems, product.product_id]);
+    },[state.cartItems]);
 
     function addToWishList(product) {
         // Toggle favourite status
@@ -40,7 +40,7 @@ function Product({ product }) {
                 <h3 className='font-semibold'>{product_name}</h3>
                 <p className='text-sm text-gray-500 mt-2 truncate'>{description}</p>
                 <p className='mt-auto text-lg font-bold'>
-                    ₹ {price.toLocaleString('en-IN')}
+                    ₹ {Number(price).toLocaleString('en-IN')}
                 </p>
                 {isAdded ? (
                     <button className='bg-orange-200 text-white font-semibold text-sm px-2 py-1 my-2'>Added to Cart</button>
