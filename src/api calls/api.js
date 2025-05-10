@@ -86,3 +86,31 @@ export const decrementQty = async (productId, sessionId, dispatch) => {
         throw new Error('Failed to decrease the qty of item in cart');
     }
 }
+
+export const toggleWishListAPI = async (productId, sessionId, dispatch) => {
+    try {
+        const response = await axios.post(`http://localhost:4000/api/wishlist/toggle`, {
+            product_id: productId,
+            session_id: sessionId
+        });
+        if(dispatch) {
+            dispatch({type: 'FETCH_WISHLIST_ITEMS', payload: response.data});
+        }
+        return response.data;
+
+    } catch (error) {
+        console.log('Error while adding item to watchlist');
+        throw new Error('Failed to add item to watchlist');
+    }
+}
+
+export const fetchWishlistItems = async (sessionId) => {
+    try {
+        const response = await axios.get(`http://localhost:4000/api/wishlist/${sessionId}`);
+        
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching wishlist items:', error);
+        throw new Error('Failed to fetch wishlist items');
+    }
+}

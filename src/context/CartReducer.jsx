@@ -14,46 +14,25 @@ export const cartReducer = (state, action) => {
                 products: action.payload
             };
         case 'FETCH_CART_ITEMS':
+             const updatedCartPrice = action.payload.reduce((total, item)=> total + item.price* item.quantity, 0)
             return {
                 ...state,
                 cartItems: action.payload,
-                totalPrice: action.payload.reduce((total, item) => total + item.price * item.quantity,0)
+                totalPrice: updatedCartPrice
             }
         case 'ADD_TO_CART':
-            const updatedCartItems = [
-                ...state.cartItems, 
-                { ...action.payload }
-            ]
-
-            const updatedPrice = updatedCartItems.reduce((total, item)=> total + item.price* item.quantity,0)
+            const updatedPrice = state.cartItems.reduce((total, item)=> total + item.price* item.quantity, 0)
             
             return{
                 ...state,
-                cartItems: updatedCartItems,
                 totalPrice: updatedPrice,
             };
             
         case 'REMOVE_FROM_CART':
-            const filteredCartItems = state.cartItems.filter((item)=> item.id !== action.payload.id);
-            const updatedFilteredPrice = filteredCartItems.reduce((total, item)=> total + item.price, 0);
-            
-            // const updatedFilteredProducts = state.products.map((item)=> {
-            //     if(item.id === action.payload.id){
-            //         return {...item, isAdded: false}
-            //     }
-            //     // Ensure all products are returned correctly
-            //     return item;
-            // })
-        
-            // const updatedRemovedItemList = state.wishList.map((item)=> {
-            //     if(item.id === action.payload.id)return { ...item, isAdded: false}
-            //     else return item;
-            // })
+            const updatedFilteredPrice = state.cartItems.reduce((total, item)=> total + item.price, 0);
             
             return{
                 ...state,
-                // products: updatedFilteredProducts,
-                cartItems: filteredCartItems,
                 totalPrice: updatedFilteredPrice,
                 // wishList: updatedRemovedItemList
             }
@@ -63,33 +42,10 @@ export const cartReducer = (state, action) => {
                 cartItems: [],
                 totalPrice: 0,
             };
-        case 'ADD_TO_WISHLIST':
-            // Check if the product is already in the wishlist
-            const existingProductIndex = state.wishList.findIndex(item => item.id === action.payload.id);
-            
-            let updatedProductList;
-            let updatedWishList;
-            if(existingProductIndex > -1){
-                // Remove the product if it's already in the wishlist
-                updatedWishList = state.wishList.filter(item => item.id !== action.payload.id);
-                updatedProductList = state.products.map(item => {
-                    if(item.id === action.payload.id){
-                        return { ...item, isFavourite: false}
-                    }else return item;
-                })
-            }else{
-                // Add the product to the wishlist
-                updatedWishList = [...state.wishList, action.payload];
-                updatedProductList = state.products.map(item => {
-                    if(item.id === action.payload.id){
-                        return {... item, isFavourite: true}
-                    }else return item;
-                    })
-            }
-            return{
+        case 'FETCH_WISHLIST_ITEMS':
+             return {
                 ...state,
-                products: updatedProductList,
-                wishList: updatedWishList
+                wishList: action.payload
             }
         case 'DECREMENT_QTY':
             const updatedDecrementedQty = state.cartItems.map(item => {

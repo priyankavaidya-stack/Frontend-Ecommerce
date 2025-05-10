@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useCartContext } from '../context/CartContext';
 import { FaHeart } from "react-icons/fa";
-import { addToCartAPI } from '../api calls/api.js'
+import { addToCartAPI, toggleWishListAPI } from '../api calls/api.js'
 
 function Product({ product }) {
-    const { product_name, product_img, description, price, ratings, isfavourite:isFavourite } = product;
+    const { product_id, product_name, product_img, description, price, ratings } = product;
     const {  state, dispatch } = useCartContext();
     
-    const [favourite, setFavourite] = useState(isFavourite);
     const [isAdded, setIsAdded] = useState(false);
     
     const addToCart = async(productId, sessionId) => {
@@ -24,17 +23,21 @@ function Product({ product }) {
             setIsAdded(isProductInCart);
     },[state.cartItems]);
 
-    function addToWishList(product) {
-        // Toggle favourite status
-        const updatedFavourite = !favourite;
-        setFavourite(updatedFavourite);
-        // Dispatch the action to add/remove from the wishlist
-        dispatch({ type: 'ADD_TO_WISHLIST', payload: { ...product, isFavourite: updatedFavourite }});
+    const toggleWishList = async(productId, sessionId) => {
+        try {
+            toggleWishListAPI(productId, sessionId, dispatch);
+        } catch (error) {
+            console.error('Error while adding item to wishlist', error);
+        }
     }
+
+    const wishList = state.wishList;
+
+    const isItemInWishlist = wishList.some(item => item.product_id === product_id);
 
     return (
         <div className='rounded-lg border border-gray-300 hover:border-orange-400 relative'>
-            <FaHeart className={`m-1 absolute top-3 right-3 cursor-pointer ${favourite ? 'text-red-600' : 'text-white'}`} size={20} onClick={() => addToWishList(product)}/>
+            <FaHeart className={`m-1 absolute top-3 right-3 cursor-pointer ${isItemInWishlist ? 'text-red-600' : 'text-white'}`} size={20} onClick={() => toggleWishList(product_id, 123)}/>
             <img src={product_img} className='rounded-t-lg w-full h-48 object-cover'/>
             <div className='px-2 py-1'>
                 <h3 className='font-semibold'>{product_name}</h3>
@@ -48,8 +51,8 @@ function Product({ product }) {
                     <button
                         className='bg-orange-400 text-white font-semibold text-sm px-2 py-1 my-2 cursor-pointer'
                         onClick={() => {
-                            addToCart(product.product_id, 123);
                             setIsAdded(true);
+                            addToCart(product_id, 123);
                         }}
                     >
                         Add to Cart

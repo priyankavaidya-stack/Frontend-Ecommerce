@@ -2,15 +2,30 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartContext } from '../context/CartContext';
 import WishListItem from './WishListItem';
+import { useEffect } from 'react';
+import { fetchWishlistItems } from '../api calls/api.js'
 
 function WishList() {
-    const {state} = useCartContext();
+    const { state, dispatch } = useCartContext();
     
     const navigate = useNavigate();
 
     function goToShopping(){
         navigate('/');
     }
+
+    async function fetchWishlist(sessionId) {
+        try {
+            const updatedWishlist = await fetchWishlistItems(sessionId); 
+            dispatch({ type: 'FETCH_WISHLIST_ITEMS', payload: updatedWishlist }); 
+        } catch (error) {
+            console.error('Error fetching wishlist on load:', error);
+        }
+    }
+
+    useEffect(()=>{
+         fetchWishlist(123);
+    }, []);
 
     return (
         <>

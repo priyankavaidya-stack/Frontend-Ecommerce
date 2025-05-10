@@ -1,4 +1,3 @@
-import React from 'react';
 import { useCartContext } from '../context/CartContext';
 
 function Checkout() {
@@ -9,7 +8,7 @@ function Checkout() {
         <div className='border border-gray-300 rounded-lg'>
             <h1 className='font-medium uppercase text-gray-500 py-2 border-b border-b-gray-300 px-4'>Price Details</h1>
             <div className='items-center px-4 py-2 border-b border-b-gray-300 border-dashed'>
-                <p className='py-2 flex justify-between'>Price ({cartItems.length===1 ? 'item' : 'items'}) <span className='font-semibold'>₹ {(Number(totalPrice) + 1000*cartItems.length).toLocaleString('en-IN')}</span></p>
+                <p className='py-2 flex justify-between'>Price ({cartItems.length === 1 ? 'item' : 'items'}) <span className='font-semibold'>₹ {Number(totalPrice + 1000*cartItems.length).toLocaleString('en-IN')}</span></p>
                 <p className='py-2 flex justify-between'>Discount <span className='text-emerald-500'>- ₹{(1000*cartItems.length).toLocaleString('en-IN')}</span></p>
                 <p className='py-2 flex justify-between'>Delivery Charges <span className='text-emerald-500'>Free</span></p>
             </div> 
