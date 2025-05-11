@@ -114,3 +114,15 @@ export const fetchWishlistItems = async (sessionId) => {
         throw new Error('Failed to fetch wishlist items');
     }
 }
+
+export const clearFromCartAPI = async (sessionId, dispatch) => {
+    try {
+        const response = await axios.delete(`http://localhost:4000/api/cart/clear/${sessionId}`);
+         dispatch({type: 'CLEAR_CART', payload: response.data});
+        return response.data;
+
+    } catch (error) {
+        console.error('Error clearing the cart', error);
+        throw new Error('Failed clearing the cart');
+    }
+}
