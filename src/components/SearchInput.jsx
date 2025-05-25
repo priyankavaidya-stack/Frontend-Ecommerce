@@ -20,7 +20,7 @@ function SearchInput() {
 
     return (
         <>
-            <input type="text" placeholder='Search products...' className='w-[80%] rounded-md outline-0 p-1 bg-gray-100 text-sm' onChange={ handleSearchInput } value={searchText} />
+            <input type="text" placeholder='Search products...' className='w-full rounded-md outline-0 p-2 bg-gray-100 text-sm shadow' onChange={ handleSearchInput } value={searchText} />
         </>
     );
 }
